@@ -1,38 +1,79 @@
+import java.io.File;
+import java.io.IOException;
+import java.util.Iterator;
+
 public class Main {
     public static void main(String[] args) {
         LoopList<Integer> test = new LoopList<>();
 
-        test.pushFront(100);
-        test.pushBack(200);
-        test.pushFront(300);
-        test.pushBack(1100);
-        test.pushFront(90);
-        test.pushBack(5);
+        File file = new File(".", "pop");
+        try {
+            test.load(file);
+        }  catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
 
-        test.insert(999, 0);
-        test.insert(32154, 3);
-        test.insert(74554, 7);
-        test.insert(11111, 9);
+        Iterator rIterator = test.reverseIterator();
 
-        test.remove(3);
-        test.remove(7);
-        test.remove(0);
+        //Object a;
+        test.forEach(a -> {
 
-        test.set(-12313, 2);
-
-        //System.out.println(test.get(2));
-
-        System.out.println(test.isEmpty());
-
-        System.out.println(test.getSize());
-
+//            if(a < 0)
+//                System.out.println(-a);
+//            else
+//                System.out.println(a);
+        });
+        //for(int data : test)
+        //    System.out.println(data);
         System.out.println();
-        for(int data: test)
-            System.out.println(data);
+        while(rIterator.hasNext())
+            System.out.println(rIterator.next());
 
-        System.out.println();
-        test.sort();
-        for(int data: test)
-            System.out.println(data);
+
+
+//        test.pushFront(100);
+//        test.pushBack(200);
+//        test.pushFront(300);
+//        test.pushBack(1100);
+//        test.pushFront(90);
+//        test.pushBack(5);
+//
+//        test.insert(999, 0);
+//        test.insert(32154, 3);
+//        test.insert(74554, 7);
+//        test.insert(11111, 9);
+//
+//        //test.remove(3);
+//        //test.remove(7);
+//        //test.remove(0);
+//
+//        test.set(-12313, 2);
+//
+//        //System.out.println(test.get(2));
+//
+//        System.out.println(test.isEmpty());
+//
+//        System.out.println(test.getSize());
+//
+//        System.out.println();
+//        for(int data: test)
+//            System.out.println(data);
+//
+////        forEach(a => {
+////            a.
+////        })
+//
+//        System.out.println();
+//        test.sort();
+//        Iterator<Integer> reverseIterator = test.reverseIterator();
+//        while(reverseIterator.hasNext())
+//            System.out.println(reverseIterator.next());
+//
+//        File file = new File(".", "pop");
+//        try {
+//            test.save(file);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
     }
 }

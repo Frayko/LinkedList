@@ -1,7 +1,9 @@
-import java.io.Console;
+import java.io.*;
 import java.util.Iterator;
+import java.util.Objects;
+import java.util.function.Consumer;
 
-public class LoopList <T extends Comparable<T>> implements List<T>, Iterable<T> {
+public class LoopList <T extends Comparable<T>> implements List<T>, Iterable<T>, Consumer<T>, Serializable {
     private Node<T> root;
     private int size = 0;
 
@@ -9,7 +11,7 @@ public class LoopList <T extends Comparable<T>> implements List<T>, Iterable<T> 
         root = new Node<>(null, null, null);
     }
 
-    private class Node <T extends Comparable<T>> implements Comparable<T> {
+    private class Node <T extends Comparable<T>> implements Comparable<T>, Serializable {
         private T data;
         private Node<T> prev, next;
 
@@ -57,7 +59,7 @@ public class LoopList <T extends Comparable<T>> implements List<T>, Iterable<T> 
     }
 
     @Override
-    public void insert(T data, int index) {
+    public void insert(T data, int index) throws NullPointerException {
         if(index > size || index < 0)
             throw new NullPointerException("Выход за границы списка");
 
@@ -75,7 +77,7 @@ public class LoopList <T extends Comparable<T>> implements List<T>, Iterable<T> 
     }
 
     @Override
-    public void remove(int index) {
+    public void remove(int index) throws NullPointerException {
         if(index >= size || index < 0)
             throw new NullPointerException("Выход за границы списка");
 
@@ -95,7 +97,7 @@ public class LoopList <T extends Comparable<T>> implements List<T>, Iterable<T> 
         --size;
     }
 
-    private Node<T> getNode(int index) {
+    private Node<T> getNode(int index) throws NullPointerException {
         if(index >= size || index < 0)
             throw new NullPointerException("Выход за границы списка");
 
@@ -106,7 +108,7 @@ public class LoopList <T extends Comparable<T>> implements List<T>, Iterable<T> 
     }
 
     @Override
-    public T get(int index) {
+    public T get(int index) throws NullPointerException {
         if(index >= size || index < 0)
             throw new NullPointerException("Выход за границы списка");
 
@@ -117,7 +119,7 @@ public class LoopList <T extends Comparable<T>> implements List<T>, Iterable<T> 
     }
 
     @Override
-    public void set(T data, int index) {
+    public void set(T data, int index) throws NullPointerException {
         if(index >= size || index < 0)
             throw new NullPointerException("Выход за границы списка");
 
@@ -175,6 +177,18 @@ public class LoopList <T extends Comparable<T>> implements List<T>, Iterable<T> 
     }
 
     @Override
+    public void accept(T t) {
+        System.out.println(t);
+    }
+
+    @Override
+    public void forEach(Consumer<? super T> action) {
+        Objects.requireNonNull(action);
+        for(T data : this)
+            action.accept(data);
+    }
+
+    @Override
     public Iterator<T> iterator() {
         return new Iterator<>() {
             int counter = 0;
@@ -206,10 +220,34 @@ public class LoopList <T extends Comparable<T>> implements List<T>, Iterable<T> 
 
             @Override
             public T next() {
-                if(counter++ != 0)
-                    buf = buf.prev;
+                buf = buf.prev;
+                counter++;
                 return buf.data;
             }
         };
+    }
+
+    public void save(File file) throws IOException {
+        ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(file, false));
+
+        Node<T> buf = root;
+
+        oos.writeInt(size);
+        for(int i = 0; i < size; ++i, buf = buf.next)
+            oos.writeObject(buf);
+        oos.close();
+    }
+
+    public void load(File file) throws IOException, ClassNotFoundException {
+        ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file));
+
+        this.root = null;
+        this.size = 0;
+
+        int counts = ois.readInt();
+        for(int i = 0; i < counts; ++i) {
+            Node<T> tmp = (Node<T>) ois.readObject();
+            pushBack(tmp.data);
+        }
     }
 }
