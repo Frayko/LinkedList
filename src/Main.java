@@ -26,10 +26,13 @@ public class Main {
 
         System.out.println(test.getSize());
 
-        test.print();
+        System.out.println();
+        for(int data: test)
+            System.out.println(data);
 
         System.out.println();
         test.sort();
-        test.print();
+        for(int data: test)
+            System.out.println(data);
     }
 }

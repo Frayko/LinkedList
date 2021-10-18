@@ -25,12 +25,6 @@ public class LoopList <T extends Comparable<T>> implements List<T>, Iterable<T> 
         }
     }
 
-    public void print() {
-        Node<T> buf = this.root;
-        for(int i = 0; i < size; ++i, buf = buf.next)
-            System.out.println(buf.data);
-    }
-
     @Override
     public void pushBack(T data) {
         if(size == 0) {
