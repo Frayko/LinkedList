@@ -141,33 +141,31 @@ public class LoopList <T extends Comparable<T>> implements List<T>, Iterable<T>,
 
     @Override
     public void sort() {
-        quickSort(0, size - 1);
+        quickSort(this.root, this.root.prev);
     }
 
-    private void quickSort(int begin, int end) {
-        if (begin < end) {
-            int partitionIndex = partition(begin, end);
-
-            quickSort(begin, partitionIndex - 1);
-            quickSort(partitionIndex + 1, end);
+    private void quickSort(Node<T> l, Node<T> h) {
+        if(l != h) {
+            Node<T> temp = partition(l, h);
+            quickSort(l, temp.prev);
+            quickSort(temp, h);
         }
     }
 
-    private int partition(int begin, int end) {
-        T pivot = get(end);
-        int i = begin - 1;
+    private Node<T> partition(Node<T> l, Node<T> h) {
+        T x = h.data;
 
-        for (int j = begin; j < end; j++) {
-            if (get(j).compareTo(pivot) <= 0) {
-                ++i;
+        Node<T> i = l.prev;
 
-                swap(getNode(i), getNode(j));
+        for(Node<T> j = l; j != h; j = j.next) {
+            if(j.compareTo(x) <= 0) {
+                i = (i == h) ? l : i.next;
+                swap(i, j);
             }
         }
-
-        swap(getNode(i + 1), getNode(end));
-
-        return i + 1;
+        i = (i == h) ? l : i.next;
+        swap(i, h);
+        return i;
     }
 
     private void swap(Node<T> a, Node<T> b) {
