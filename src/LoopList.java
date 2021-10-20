@@ -97,16 +97,6 @@ public class LoopList <T extends Comparable<T>> implements List<T>, Iterable<T>,
         --size;
     }
 
-    private Node<T> getNode(int index) throws NullPointerException {
-        if(index >= size || index < 0)
-            throw new NullPointerException("Выход за границы списка");
-
-        Node<T> buf = this.root;
-        for (int i = 0; i != index; ++i, buf = buf.next);
-
-        return buf;
-    }
-
     @Override
     public T get(int index) throws NullPointerException {
         if(index >= size || index < 0)
@@ -153,12 +143,12 @@ public class LoopList <T extends Comparable<T>> implements List<T>, Iterable<T>,
     }
 
     private Node<T> partition(Node<T> l, Node<T> h) {
-        T x = h.data;
+        T pivot = h.data;
 
         Node<T> i = l.prev;
 
         for(Node<T> j = l; j != h; j = j.next) {
-            if(j.compareTo(x) <= 0) {
+            if(j.compareTo(pivot) <= 0) {
                 i = (i == h) ? l : i.next;
                 swap(i, j);
             }
