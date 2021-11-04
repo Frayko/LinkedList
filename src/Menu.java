@@ -19,7 +19,7 @@ public class Menu {
         while (true) {
             k = 1;
             System.out.println("Выберите тип данных");
-            for (Types type : Types.values())
+            for (String type : TypeFactory.getTypeNameList())
                 System.out.println(k++ + " - " + type);
             System.out.print(">> ");
             input = in.nextInt();
