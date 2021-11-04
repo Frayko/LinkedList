@@ -1,41 +1,41 @@
 import java.io.*;
 import java.util.Iterator;
-import java.util.Objects;
-import java.util.function.Consumer;
 
-public class LoopList <T extends Comparable<T>> implements List<T>, Iterable<T>, Consumer<T>, Serializable {
-    private Node<T> root;
+public class LoopList <T> implements List<T>, Serializable {
+    private Node root;
     private int size = 0;
 
     public LoopList() {
-        root = new Node<>(null, null, null);
+        root = new Node(null, null, null);
     }
 
-    private class Node <T extends Comparable<T>> implements Comparable<T>, Serializable {
+    private class Node implements Serializable {
         private T data;
-        private Node<T> prev, next;
+        private Node prev, next;
 
-        Node(T data, Node<T> prev, Node<T> next) {
+        Node(T data, Node prev, Node next) {
             this.data = data;
             this.prev = prev;
             this.next = next;
         }
 
         @Override
-        public int compareTo(T o) {
-            return data.compareTo(o);
+        public String toString() {
+            return "Node{" +
+                    "data=" + data +
+                    '}';
         }
     }
 
     @Override
     public void pushBack(T data) {
         if(size == 0) {
-            this.root = new Node<>(data, null, null);
+            this.root = new Node(data, null, null);
             this.root.next = this.root;
             this.root.prev = this.root;
         } else {
-            Node<T> buf = this.root.prev;
-            this.root.prev = new Node<>(data, buf, buf.next);
+            Node buf = this.root.prev;
+            this.root.prev = new Node(data, buf, buf.next);
             this.root.prev.prev.next = this.root.prev;
         }
 
@@ -45,12 +45,12 @@ public class LoopList <T extends Comparable<T>> implements List<T>, Iterable<T>,
     @Override
     public void pushFront(T data) {
         if(size == 0) {
-            this.root = new Node<>(data, null, null);
+            this.root = new Node(data, null, null);
             this.root.next = this.root;
             this.root.prev = this.root;
         } else {
-            Node<T> buf = this.root;
-            this.root = new Node<>(data, buf.prev, buf);
+            Node buf = this.root;
+            this.root = new Node(data, buf.prev, buf);
             buf.prev.next = this.root;
             buf.prev = this.root;
         }
@@ -66,10 +66,10 @@ public class LoopList <T extends Comparable<T>> implements List<T>, Iterable<T>,
         if(index == 0) {
             pushFront(data);
         } else {
-            Node<T> buf = this.root;
+            Node buf = this.root;
             for (int i = 0; i != index; ++i, buf = buf.next);
             buf = buf.prev;
-            buf.next = new Node<>(data, buf, buf.next);
+            buf.next = new Node(data, buf, buf.next);
             buf.next.next.prev = buf.next;
 
             ++size;
@@ -84,7 +84,7 @@ public class LoopList <T extends Comparable<T>> implements List<T>, Iterable<T>,
         if(index == 0 && size == 1) {
             this.root = null;
         } else {
-            Node<T> buf = this.root;
+            Node buf = this.root;
             for (int i = 0; i != index; ++i, buf = buf.next) ;
 
             buf.prev.next = buf.next;
@@ -97,12 +97,22 @@ public class LoopList <T extends Comparable<T>> implements List<T>, Iterable<T>,
         --size;
     }
 
+    private Node getNode(int index) throws NullPointerException {
+        if(index >= size || index < 0)
+            throw new NullPointerException("Выход за границы списка");
+
+        Node buf = this.root;
+        for (int i = 0; i != index; ++i, buf = buf.next);
+
+        return buf;
+    }
+
     @Override
     public T get(int index) throws NullPointerException {
         if(index >= size || index < 0)
             throw new NullPointerException("Выход за границы списка");
 
-        Node<T> buf = this.root;
+        Node buf = this.root;
         for (int i = 0; i != index; ++i, buf = buf.next);
 
         return buf.data;
@@ -113,7 +123,7 @@ public class LoopList <T extends Comparable<T>> implements List<T>, Iterable<T>,
         if(index >= size || index < 0)
             throw new NullPointerException("Выход за границы списка");
 
-        Node<T> buf = this.root;
+        Node buf = this.root;
         for (int i = 0; i != index; ++i, buf = buf.next);
 
         buf.data = data;
@@ -130,25 +140,25 @@ public class LoopList <T extends Comparable<T>> implements List<T>, Iterable<T>,
     }
 
     @Override
-    public void sort() {
-        quickSort(this.root, this.root.prev);
+    public void sort(Comparator comparator) {
+        quickSort(this.root, this.root.prev, comparator);
     }
 
-    private void quickSort(Node<T> l, Node<T> h) {
+    private void quickSort(Node l, Node h, Comparator comparator) {
         if(l != h) {
-            Node<T> temp = partition(l, h);
-            quickSort(l, temp.prev);
-            quickSort(temp, h);
+            Node temp = partition(l, h, comparator);
+            quickSort(l, temp.prev, comparator);
+            quickSort(temp, h, comparator);
         }
     }
 
-    private Node<T> partition(Node<T> l, Node<T> h) {
-        T pivot = h.data;
+    private Node partition(Node l, Node h, Comparator comparator) {
+        T x = h.data;
 
-        Node<T> i = l.prev;
+        Node i = l.prev;
 
-        for(Node<T> j = l; j != h; j = j.next) {
-            if(j.compareTo(pivot) <= 0) {
+        for(Node j = l; j != h; j = j.next) {
+            if(comparator.compare(j.data, x) <= 0) {
                 i = (i == h) ? l : i.next;
                 swap(i, j);
             }
@@ -158,29 +168,28 @@ public class LoopList <T extends Comparable<T>> implements List<T>, Iterable<T>,
         return i;
     }
 
-    private void swap(Node<T> a, Node<T> b) {
+    private void swap(Node a, Node b) {
         T buf = a.data;
         a.data = b.data;
         b.data = buf;
     }
 
-    @Override
-    public void accept(T t) {
-        System.out.println(t);
+    public void forEach(Action<T> action) {
+        if(size > 0) {
+            Node node = this.root;
+            do {
+                action.toDo(node.data);
+                node = node.next;
+            } while (node != this.root);
+        } else {
+            System.out.println("Нет элементов в массиве");
+        }
     }
 
-    @Override
-    public void forEach(Consumer<? super T> action) {
-        Objects.requireNonNull(action);
-        for(T data : this)
-            action.accept(data);
-    }
-
-    @Override
     public Iterator<T> iterator() {
-        return new Iterator<>() {
+        return new Iterator<T>() {
             int counter = 0;
-            Node<T> buf = root;
+            Node buf = root;
 
             @Override
             public boolean hasNext() {
@@ -199,7 +208,7 @@ public class LoopList <T extends Comparable<T>> implements List<T>, Iterable<T>,
     public Iterator<T> reverseIterator() {
         return new Iterator<>() {
             int counter = 0;
-            Node<T> buf = root;
+            Node buf = root;
 
             @Override
             public boolean hasNext() {
@@ -218,7 +227,7 @@ public class LoopList <T extends Comparable<T>> implements List<T>, Iterable<T>,
     public void save(File file) throws IOException {
         ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(file, false));
 
-        Node<T> buf = root;
+        Node buf = root;
 
         oos.writeInt(size);
         for(int i = 0; i < size; ++i, buf = buf.next)
@@ -234,7 +243,7 @@ public class LoopList <T extends Comparable<T>> implements List<T>, Iterable<T>,
 
         int counts = ois.readInt();
         for(int i = 0; i < counts; ++i) {
-            Node<T> tmp = (Node<T>) ois.readObject();
+            Node tmp = (Node) ois.readObject();
             pushBack(tmp.data);
         }
     }

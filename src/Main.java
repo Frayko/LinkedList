@@ -4,7 +4,36 @@ import java.util.Iterator;
 
 public class Main {
     public static void main(String[] args) {
-        LoopList<Integer> test = new LoopList<>();
+
+        Menu menu = new Menu();
+
+        menu.start();
+
+//        LoopList<Object> test = new LoopList<>();
+//
+//        TypeBuilder builder = TypeFactory.getBuider(Types.String);
+//        assert builder != null;
+//        test.pushBack(builder.create());
+//        test.pushBack(builder.create());
+//        test.pushBack(builder.create());
+//        test.pushBack(builder.create());
+//        test.pushBack(builder.create());
+//        test.pushBack(builder.create());
+//
+//        test.forEach((a1) -> {
+//            System.out.println(a1);
+//        });
+//
+//        test.sort(builder.getTypeComparator());
+//
+//        System.out.println();
+//
+//        test.forEach((a1) -> {
+//            System.out.println(a1);
+//        });
+
+//        for(Object data : test)
+//            System.out.println(data);
 
 //        File file = new File(".", "pop");
 //        try {
@@ -15,19 +44,13 @@ public class Main {
 //
 //        Iterator rIterator = test.reverseIterator();
 //
-//        test.forEach(a -> {
-//            if(a < 0)
-//                System.out.println(-a);
-//            else
-//                System.out.println(a);
-//        });
         //for(int data : test)
         //    System.out.println(data);
 //        System.out.println();
 //        while(rIterator.hasNext())
 //            System.out.println(rIterator.next());
 
-        test.pushBack(1100);
+ /*       test.pushBack(1100);
         test.pushFront(100);
         test.pushFront(300);
         test.pushBack(200);
@@ -43,13 +66,17 @@ public class Main {
         test.insert(999, 0);
         test.insert(32154, 3);
         test.insert(74554, 7);
-        test.insert(11111, 9);
+        test.insert(11111, 9);*/
+
+//        test.forEach((Action<Object>) (a1) -> {
+//            System.out.println(a1);
+//        });
 
         //test.remove(3);
         //test.remove(7);
         //test.remove(0);
 
-        test.set(-12313, 2);
+        /*test.set(-12313, 2);
 
         //System.out.println(test.get(2));
 
@@ -65,16 +92,16 @@ public class Main {
         test.sort();
 
         for(int data: test)
-            System.out.println(data);
-//        Iterator<Integer> reverseIterator = test.reverseIterator();
-//        while(reverseIterator.hasNext())
-//            System.out.println(reverseIterator.next());
+            System.out.println(data);*/
+/*        Iterator reverseIterator = test.reverseIterator();
+        while(reverseIterator.hasNext())
+            System.out.println(reverseIterator.next());
 
-//        File file = new File(".", "pop");
-//        try {
-//            test.save(file);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
+        File file = new File(".", "pop");
+        try {
+            test.save(file);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }*/
     }
 }

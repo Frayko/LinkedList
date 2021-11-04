@@ -7,5 +7,5 @@ public interface List<T> {
     void set(T data, int index);
     boolean isEmpty();
     int getSize();
-    void sort();
+    void sort(Comparator comparator);
 }
