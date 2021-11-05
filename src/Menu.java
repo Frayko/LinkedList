@@ -1,5 +1,6 @@
 import java.io.File;
 import java.io.IOException;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Menu {
@@ -121,6 +122,10 @@ public class Menu {
             }
             catch (NullPointerException | IOException | ClassNotFoundException exception) {
                 System.out.println(exception.getMessage());
+            }
+            catch (InputMismatchException exception) {
+                System.out.println("Некорректный ввод");
+                in.nextLine();
             }
         }
     }
