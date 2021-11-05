@@ -1,5 +1,5 @@
 public class IntegerType implements TypeBuilder {
-    int range;
+    private int range;
 
     IntegerType() {
         range = 10000;

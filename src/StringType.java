@@ -1,5 +1,5 @@
 public class StringType implements TypeBuilder {
-    int range;
+    private int range;
 
     StringType() {
         range = 10;

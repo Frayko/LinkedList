@@ -1,7 +1,7 @@
 import java.io.*;
 import java.util.Iterator;
 
-public class LoopList <T> implements List<T>, Serializable {
+public class LoopList<T> implements List<T>, Serializable {
     private Node root;
     private int size = 0;
 
