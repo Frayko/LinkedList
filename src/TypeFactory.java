@@ -8,7 +8,7 @@ public class TypeFactory {
         return list;
     }
 
-    public static TypeBuilder getBuider(Types type) {
+    public static TypeBuilder getBuilder(Types type) {
         switch (type) {
             case Integer -> {
                 return new IntegerType();

@@ -12,27 +12,25 @@ public class Menu {
 
     public void start() {
         boolean isExit = false;
-        int input, k;
+        int input;
 
         Scanner in = new Scanner(System.in);
 
         while (true) {
-            k = 1;
             System.out.println("Выберите тип данных");
             for (String type : TypeFactory.getTypeNameList())
-                System.out.println(k++ + " - " + type);
+                System.out.println(type);
             System.out.print(">> ");
-            input = in.nextInt();
-
-            if (input == 1) {
-                typeBuilder = new StringType();
-                break;
-            } else if (input == 2) {
-                typeBuilder = new IntegerType();
-                break;
-            } else {
-                System.out.println("Попробуйте снова");
+            String str = in.nextLine();
+            try {
+                typeBuilder = TypeFactory.getBuilder(Types.valueOf(str));
+            } catch (IllegalArgumentException exception) {
+                System.out.println(exception.getMessage());
             }
+            if (typeBuilder == null)
+                System.out.println("Попробуйте снова");
+            else
+                break;
         }
 
         printMenu();
