@@ -3,8 +3,8 @@ import java.io.IOException;
 import java.util.Scanner;
 
 public class Menu {
-    LoopList<Object> loopList;
-    TypeBuilder typeBuilder;
+    private LoopList<Object> loopList;
+    private TypeBuilder typeBuilder;
 
     Menu() {
         loopList = new LoopList<>();
