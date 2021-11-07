@@ -169,9 +169,55 @@ public class LoopList<T> implements List<T>, Serializable {
     }
 
     private void swap(Node a, Node b) {
-        T buf = a.data;
-        a.data = b.data;
-        b.data = buf;
+        //Node tmp = a;
+        if(a == b)
+            return;
+
+//        if (a.next == b) {
+//            b.prev = a.prev;
+//            a.next = b.next;
+//            b.next = a;
+//            a.prev = b;
+//        }
+//        else if (b.next == a) {
+//            a.prev = b.prev;
+//            b.next = a.next;
+//            a.next = b;
+//            b.prev = a;
+//        }
+//        else {
+            Node bPrev = b.prev;
+            Node bNext = b.next;
+            Node aPrev = a.prev;
+            Node aNext = a.next;
+
+            bPrev.next = a;
+            bNext.prev = a;
+            aPrev.next = b;
+            aNext.prev = b;
+
+            b.prev = aPrev;
+            b.next = aNext;
+            a.prev = bPrev;
+            a.next = bNext;
+//        }
+        //b.prev.next = tmp;
+        //b.next.prev = tmp;
+
+//        b.prev = a.prev;
+//        b.next = a.next;
+//        a.next.prev = b;
+//        a.prev.next = b;
+//
+//        tmp.prev = tmpPrev;
+//        tmp.next = tmpNext;
+//        tmpPrev.next = tmp;
+//        tmpNext.prev = tmp;
+        //tmp.prev.next = tmp;
+        //tmp.next.prev = tmp;
+//        T buf = a.data;
+//        a.data = b.data;
+//        b.data = buf;
     }
 
     public void forEach(Action<T> action) {
