@@ -149,6 +149,7 @@ public class LoopList<T> implements List<T>, Serializable {
             Node temp = partition(l, h, comparator);
             quickSort(l, temp.prev, comparator);
             quickSort(temp, h, comparator);
+            //quickSort(temp.next, h, comparator);
         }
     }
 
@@ -168,56 +169,44 @@ public class LoopList<T> implements List<T>, Serializable {
         return i;
     }
 
-    private void swap(Node a, Node b) {
-        //Node tmp = a;
-        if(a == b)
+    private void swap(Node x, Node y) {
+        if(x == y) {
             return;
+        }
 
-//        if (a.next == b) {
-//            b.prev = a.prev;
-//            a.next = b.next;
-//            b.next = a;
-//            a.prev = b;
+        Node x_prev_tmp = x.prev;
+        Node x_next_tmp = x.next;
+        Node y_prev_tmp = y.prev;
+        Node y_next_tmp = y.next;
+
+        if (x.next == y) {
+            //works?? no, bugs
+            x_prev_tmp.next = y;
+            y.prev = x_prev_tmp;
+            y_next_tmp.next = x;
+            x.next = y_next_tmp;
+            x.prev = y;
+            y.next = x;
+        }
+//        else if (y.next == x) {
+//            y_prev_tmp.next = x;
+//            x.prev = y_prev_tmp;
+//            x_next_tmp.next = y;
+//            y.next = x_next_tmp;
+//            y.prev = x;
+//            x.next = y;
 //        }
-//        else if (b.next == a) {
-//            a.prev = b.prev;
-//            b.next = a.next;
-//            a.next = b;
-//            b.prev = a;
-//        }
-//        else {
-            Node bPrev = b.prev;
-            Node bNext = b.next;
-            Node aPrev = a.prev;
-            Node aNext = a.next;
+        else {
+            y.prev = x_prev_tmp;
+            y.next = x_next_tmp;
+            x_next_tmp.prev = y;
+            x_prev_tmp.next = y;
 
-            bPrev.next = a;
-            bNext.prev = a;
-            aPrev.next = b;
-            aNext.prev = b;
-
-            b.prev = aPrev;
-            b.next = aNext;
-            a.prev = bPrev;
-            a.next = bNext;
-//        }
-        //b.prev.next = tmp;
-        //b.next.prev = tmp;
-
-//        b.prev = a.prev;
-//        b.next = a.next;
-//        a.next.prev = b;
-//        a.prev.next = b;
-//
-//        tmp.prev = tmpPrev;
-//        tmp.next = tmpNext;
-//        tmpPrev.next = tmp;
-//        tmpNext.prev = tmp;
-        //tmp.prev.next = tmp;
-        //tmp.next.prev = tmp;
-//        T buf = a.data;
-//        a.data = b.data;
-//        b.data = buf;
+            x.prev = y_prev_tmp;
+            x.next = y_next_tmp;
+            y_next_tmp.prev = x;
+            y_prev_tmp.next = x;
+        }
     }
 
     public void forEach(Action<T> action) {
