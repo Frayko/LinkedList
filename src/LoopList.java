@@ -164,6 +164,7 @@ public class LoopList<T> implements List<T>, Serializable {
                 swap(i, j);
             }
         }
+        System.out.println("poop");
         i = (i == h) ? l : i.next;
         swap(i, h);
         return i;
@@ -183,19 +184,19 @@ public class LoopList<T> implements List<T>, Serializable {
             //works?? no, bugs
             x_prev_tmp.next = y;
             y.prev = x_prev_tmp;
-            y_next_tmp.next = x;
+            y_next_tmp.prev = x;
             x.next = y_next_tmp;
             x.prev = y;
             y.next = x;
         }
-//        else if (y.next == x) {
-//            y_prev_tmp.next = x;
-//            x.prev = y_prev_tmp;
-//            x_next_tmp.next = y;
-//            y.next = x_next_tmp;
-//            y.prev = x;
-//            x.next = y;
-//        }
+        else if (y.next == x) {
+            y_prev_tmp.next = x;
+            x.prev = y_prev_tmp;
+            x_next_tmp.prev = y;
+            y.next = x_next_tmp;
+            y.prev = x;
+            x.next = y;
+        }
         else {
             y.prev = x_prev_tmp;
             y.next = x_next_tmp;
