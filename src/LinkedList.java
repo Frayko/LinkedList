@@ -1,11 +1,11 @@
 import java.io.*;
 import java.util.Iterator;
 
-public class LoopList<T> implements List<T>, Serializable {
+public class LinkedList<T> implements List<T>, Serializable {
     private Node root;
     private int size;
 
-    public LoopList() {
+    public LinkedList() {
         root = null;
         size = 0;
     }

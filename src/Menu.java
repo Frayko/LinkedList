@@ -4,11 +4,11 @@ import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Menu {
-    private LoopList<Object> loopList;
+    private LinkedList<Object> linkedList;
     private TypeBuilder typeBuilder;
 
     Menu() {
-        loopList = new LoopList<>();
+        linkedList = new LinkedList<>();
     }
 
     public void start() {
@@ -45,24 +45,24 @@ public class Menu {
 
                 switch (input) {
                     case 1 -> {
-                        loopList.forEach(System.out::println);
+                        linkedList.forEach(System.out::println);
                     }
                     case 2 -> {
                         System.out.print("Введите количество: ");
                         int count = in.nextInt();
                         for (int i = 0; i < count; i++)
-                            loopList.pushBack(typeBuilder.create());
+                            linkedList.pushBack(typeBuilder.create());
                         System.out.println(count + " объектов были успешно добавлены");
                     }
                     case 3 -> {
                         System.out.print("Введите объект: ");
                         if (typeBuilder.getTypeName().equals("Integer")) {
                             int data = in.nextInt();
-                            loopList.pushFront(data);
+                            linkedList.pushFront(data);
                         } else if (typeBuilder.getTypeName().equals("String")) {
                             in.nextLine();
                             String data = in.nextLine();
-                            loopList.pushFront(data);
+                            linkedList.pushFront(data);
                         } else {
                             System.out.println("Ошибка в выбранном типе!");
                         }
@@ -71,11 +71,11 @@ public class Menu {
                         System.out.print("Введите объект: ");
                         if (typeBuilder.getTypeName().equals("Integer")) {
                             int data = in.nextInt();
-                            loopList.pushBack(data);
+                            linkedList.pushBack(data);
                         } else if (typeBuilder.getTypeName().equals("String")) {
                             in.nextLine();
                             String data = in.nextLine();
-                            loopList.pushBack(data);
+                            linkedList.pushBack(data);
                         } else {
                             System.out.println("Ошибка в выбранном типе!");
                         }
@@ -86,11 +86,11 @@ public class Menu {
                         System.out.print("Введите объект: ");
                         if (typeBuilder.getTypeName().equals("Integer")) {
                             int data = in.nextInt();
-                            loopList.insert(data, index);
+                            linkedList.insert(data, index);
                         } else if (typeBuilder.getTypeName().equals("String")) {
                             in.nextLine();
                             String data = in.nextLine();
-                            loopList.insert(data, index);
+                            linkedList.insert(data, index);
                         } else {
                             System.out.println("Ошибка в выбранном типе!");
                         }
@@ -98,23 +98,23 @@ public class Menu {
                     case 6 -> {
                         System.out.print("Введите индекс: ");
                         int index = in.nextInt();
-                        loopList.remove(index);
+                        linkedList.remove(index);
                     }
                     case 7 -> {
                         System.out.print("Введите индекс: ");
                         int index = in.nextInt();
-                        System.out.println("Полученный объект: " + loopList.get(index));
+                        System.out.println("Полученный объект: " + linkedList.get(index));
                     }
                     case 8 -> {
-                        loopList.sort(typeBuilder.getTypeComparator());
+                        linkedList.sort(typeBuilder.getTypeComparator());
                         System.out.println("Список был успешно отсортирован");
                     }
                     case 9 -> {
-                       loopList.save(new File(typeBuilder.getTypeName() + ".data"));
+                       linkedList.save(new File(typeBuilder.getTypeName() + ".data"));
                         System.out.println("Данные были успешно сохранены в файл");
                     }
                     case 10 -> {
-                        loopList.load(new File(typeBuilder.getTypeName() + ".data"));
+                        linkedList.load(new File(typeBuilder.getTypeName() + ".data"));
                         System.out.println("Данные были успешно загружены из файла");
                     }
                     case 0 -> isExit = true;
