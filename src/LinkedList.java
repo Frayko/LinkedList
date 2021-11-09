@@ -148,6 +148,24 @@ public class LinkedList<T> implements List<T>, Serializable {
         this.root = mergeSort(this.root, comparator);
     }
 
+    public Node mergeSort(Node node, Comparator comparator) {
+        if (node == null || node.next == null) {
+            return node;
+        }
+
+        Node x = node, y;
+
+        Node slow = split(node);
+        y = slow.next;
+        slow.next = null;
+
+        x = mergeSort(x, comparator);
+        y = mergeSort(y, comparator);
+
+        node = merge(x, y, comparator);
+        return node;
+    }
+
     public Node split(Node node) {
         Node slow = node;
         Node fast = node.next;
@@ -184,24 +202,6 @@ public class LinkedList<T> implements List<T>, Serializable {
             y.prev = null;
             return y;
         }
-    }
-
-    public Node mergeSort(Node node, Comparator comparator) {
-        if (node == null || node.next == null) {
-            return node;
-        }
-
-        Node x = node, y;
-
-        Node slow = split(node);
-        y = slow.next;
-        slow.next = null;
-
-        x = mergeSort(x, comparator);
-        y = mergeSort(y, comparator);
-
-        node = merge(x, y, comparator);
-        return node;
     }
 
     public void forEach(Action<T> action) {
