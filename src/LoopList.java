@@ -3,10 +3,11 @@ import java.util.Iterator;
 
 public class LoopList<T> implements List<T>, Serializable {
     private Node root;
-    private int size = 0;
+    private int size;
 
     public LoopList() {
-        root = new Node(null, null, null);
+        root = null;
+        size = 0;
     }
 
     private class Node implements Serializable {
@@ -31,12 +32,11 @@ public class LoopList<T> implements List<T>, Serializable {
     public void pushBack(T data) {
         if(size == 0) {
             this.root = new Node(data, null, null);
-            this.root.next = this.root;
-            this.root.prev = this.root;
-        } else {
-            Node buf = this.root.prev;
-            this.root.prev = new Node(data, buf, buf.next);
-            this.root.prev.prev.next = this.root.prev;
+        }
+        else {
+            Node tmp = this.root;
+            for(;tmp.next != null; tmp = tmp.next);
+            tmp.next = new Node(data, tmp, null);
         }
 
         ++size;
@@ -44,16 +44,9 @@ public class LoopList<T> implements List<T>, Serializable {
 
     @Override
     public void pushFront(T data) {
-        if(size == 0) {
-            this.root = new Node(data, null, null);
-            this.root.next = this.root;
-            this.root.prev = this.root;
-        } else {
-            Node buf = this.root;
-            this.root = new Node(data, buf.prev, buf);
-            buf.prev.next = this.root;
-            buf.prev = this.root;
-        }
+        this.root = new Node(data, null, this.root);
+        if(this.root.next != null)
+            this.root.next.prev = this.root;
 
         ++size;
     }
@@ -65,12 +58,18 @@ public class LoopList<T> implements List<T>, Serializable {
 
         if(index == 0) {
             pushFront(data);
-        } else {
+        }
+        else if(index == size) {
+            pushBack(data);
+        }
+        else {
             Node buf = this.root;
-            for (int i = 0; i != index; ++i, buf = buf.next);
-            buf = buf.prev;
+
+            for (int i = 0; i < index - 1; ++i, buf = buf.next);
+
             buf.next = new Node(data, buf, buf.next);
-            buf.next.next.prev = buf.next;
+            if (buf.next.next != null)
+                buf.next.next.prev = buf.next;
 
             ++size;
         }
@@ -81,17 +80,22 @@ public class LoopList<T> implements List<T>, Serializable {
         if(index >= size || index < 0)
             throw new NullPointerException("Выход за границы списка");
 
-        if(index == 0 && size == 1) {
-            this.root = null;
-        } else {
+        if(index == 0) {
+            if(size == 1) {
+                this.root = null;
+            }
+            else {
+                this.root = this.root.next;
+                this.root.prev = null;
+            }
+        }
+        else {
             Node buf = this.root;
-            for (int i = 0; i != index; ++i, buf = buf.next) ;
+            for (int i = 0; i < index - 1; ++i, buf = buf.next);
 
-            buf.prev.next = buf.next;
-            buf.next.prev = buf.prev;
-
-            if(index == 0)
-                this.root = buf.next;
+            buf.next = buf.next.next;
+            if(buf.next != null)
+                buf.next.prev = buf;
         }
 
         --size;
@@ -141,73 +145,63 @@ public class LoopList<T> implements List<T>, Serializable {
 
     @Override
     public void sort(Comparator comparator) {
-        quickSort(this.root, this.root.prev, comparator);
+        this.root = mergeSort(this.root, comparator);
     }
 
-    private void quickSort(Node l, Node h, Comparator comparator) {
-        if(l != h) {
-            Node temp = partition(l, h, comparator);
-            quickSort(l, temp.prev, comparator);
-            quickSort(temp, h, comparator);
-            //quickSort(temp.next, h, comparator);
-        }
-    }
+    public Node split(Node node) {
+        Node slow = node;
+        Node fast = node.next;
 
-    private Node partition(Node l, Node h, Comparator comparator) {
-        T x = h.data;
-
-        Node i = l.prev;
-
-        for(Node j = l; j != h; j = j.next) {
-            if(comparator.compare(j.data, x) <= 0) {
-                i = (i == h) ? l : i.next;
-                swap(i, j);
+        while (fast != null) {
+            fast = fast.next;
+            if (fast != null) {
+                slow = slow.next;
+                fast = fast.next;
             }
         }
-        System.out.println("poop");
-        i = (i == h) ? l : i.next;
-        swap(i, h);
-        return i;
+
+        return slow;
     }
 
-    private void swap(Node x, Node y) {
-        if(x == y) {
-            return;
+    public Node merge(Node x, Node y, Comparator comparator) {
+        if (x == null) {
+            return y;
         }
 
-        Node x_prev_tmp = x.prev;
-        Node x_next_tmp = x.next;
-        Node y_prev_tmp = y.prev;
-        Node y_next_tmp = y.next;
-
-        if (x.next == y) {
-            //works?? no, bugs
-            x_prev_tmp.next = y;
-            y.prev = x_prev_tmp;
-            y_next_tmp.prev = x;
-            x.next = y_next_tmp;
-            x.prev = y;
-            y.next = x;
+        if (y == null) {
+            return x;
         }
-        else if (y.next == x) {
-            y_prev_tmp.next = x;
-            x.prev = y_prev_tmp;
-            x_next_tmp.prev = y;
-            y.next = x_next_tmp;
-            y.prev = x;
-            x.next = y;
+
+        if (comparator.compare(x.data, y.data) <= 0) {
+            x.next = merge(x.next, y, comparator);
+            x.next.prev = x;
+            x.prev = null;
+            return x;
         }
         else {
-            y.prev = x_prev_tmp;
-            y.next = x_next_tmp;
-            x_next_tmp.prev = y;
-            x_prev_tmp.next = y;
-
-            x.prev = y_prev_tmp;
-            x.next = y_next_tmp;
-            y_next_tmp.prev = x;
-            y_prev_tmp.next = x;
+            y.next = merge(x, y.next, comparator);
+            y.next.prev = y;
+            y.prev = null;
+            return y;
         }
+    }
+
+    public Node mergeSort(Node node, Comparator comparator) {
+        if (node == null || node.next == null) {
+            return node;
+        }
+
+        Node x = node, y;
+
+        Node slow = split(node);
+        y = slow.next;
+        slow.next = null;
+
+        x = mergeSort(x, comparator);
+        y = mergeSort(y, comparator);
+
+        node = merge(x, y, comparator);
+        return node;
     }
 
     public void forEach(Action<T> action) {
@@ -216,7 +210,7 @@ public class LoopList<T> implements List<T>, Serializable {
             do {
                 action.toDo(node.data);
                 node = node.next;
-            } while (node != this.root);
+            } while (node != null);
         } else {
             System.out.println("Нет элементов в массиве");
         }

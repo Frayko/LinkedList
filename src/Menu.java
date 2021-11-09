@@ -39,9 +39,10 @@ public class Menu {
         while (!isExit) {
             System.out.print(">> ");
 
-            input = in.nextInt();
-
             try {
+
+                input = in.nextInt();
+
                 switch (input) {
                     case 1 -> {
                         loopList.forEach(System.out::println);
