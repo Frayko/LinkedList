@@ -182,26 +182,62 @@ public class LinkedList<T> implements List<T>, Serializable {
     }
 
     public Node merge(Node x, Node y, Comparator comparator) {
-        if (x == null) {
-            return y;
+        Node merged = new Node(null, null, null);
+        Node temp = merged;
+
+        while (x != null && y != null) {
+            if (comparator.compare(x.data, y.data) < 0) {
+                temp.next = x;
+                x = x.next;
+                //x.next.prev = x;
+                //x.prev = null;
+            }
+            else {
+                temp.next = y;
+                y = y.next;
+                //y.next.prev = y;
+                //y.prev = null;
+            }
+            temp = temp.next;
         }
 
-        if (y == null) {
-            return x;
+        while (x != null) {
+            temp.next = x;
+            x = x.next;
+            //x.next.prev = x;
+            //x.prev = null;
+            temp = temp.next;
         }
 
-        if (comparator.compare(x.data, y.data) <= 0) {
-            x.next = merge(x.next, y, comparator);
-            x.next.prev = x;
-            x.prev = null;
-            return x;
+        while (y != null) {
+            temp.next = y;
+            y = y.next;
+            //y.next.prev = y;
+            //y.prev = null;
+            temp = temp.next;
         }
-        else {
-            y.next = merge(x, y.next, comparator);
-            y.next.prev = y;
-            y.prev = null;
-            return y;
-        }
+        return merged.next;
+
+//        if (x == null) {
+//            return y;
+//        }
+//
+//        if (y == null) {
+//            return x;
+//        }
+//
+//        if (comparator.compare(x.data, y.data) <= 0) {
+//            x.next = merge(x.next, y, comparator);
+//            x.next.prev = x;
+//            x.prev = null;
+//            return x;
+//        }
+//        else {
+//            y.next = merge(x, y.next, comparator);
+//            y.next.prev = y;
+//            y.prev = null;
+//            return y;
+//        }
     }
 
     public void forEach(Action<T> action) {
