@@ -106,8 +106,10 @@ public class Menu {
                         System.out.println("Полученный объект: " + linkedList.get(index));
                     }
                     case 8 -> {
+                        long start = System.nanoTime();
                         linkedList.sort(typeBuilder.getTypeComparator());
-                        System.out.println("Список был успешно отсортирован");
+                        double time = (double)(System.nanoTime() - start) / 1_000_000_000.0;
+                        System.out.printf("Список был успешно отсортирован за %.3f cек\n", time);
                     }
                     case 9 -> {
                        linkedList.save(new File(typeBuilder.getTypeName() + ".data"));
