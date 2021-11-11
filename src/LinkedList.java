@@ -14,6 +14,12 @@ public class LinkedList<T> implements List<T>, Serializable {
         private T data;
         private Node prev, next;
 
+        Node(T data) {
+            this.data = data;
+            this.prev = null;
+            this.next = null;
+        }
+
         Node(T data, Node prev, Node next) {
             this.data = data;
             this.prev = prev;
@@ -31,7 +37,7 @@ public class LinkedList<T> implements List<T>, Serializable {
     @Override
     public void pushBack(T data) {
         if(size == 0) {
-            this.root = new Node(data, null, null);
+            this.root = new Node(data);
         }
         else {
             Node tmp = this.root;
@@ -146,6 +152,7 @@ public class LinkedList<T> implements List<T>, Serializable {
     @Override
     public void sort(Comparator comparator) {
         this.root = mergeSort(this.root, comparator);
+        this.root.prev = null;
     }
 
     public Node mergeSort(Node node, Comparator comparator) {
@@ -182,62 +189,38 @@ public class LinkedList<T> implements List<T>, Serializable {
     }
 
     public Node merge(Node x, Node y, Comparator comparator) {
-        Node merged = new Node(null, null, null);
+        Node merged = new Node(null);
         Node temp = merged;
 
         while (x != null && y != null) {
             if (comparator.compare(x.data, y.data) < 0) {
                 temp.next = x;
+                x.prev = temp;
                 x = x.next;
-                //x.next.prev = x;
-                //x.prev = null;
             }
             else {
                 temp.next = y;
+                y.prev = temp;
                 y = y.next;
-                //y.next.prev = y;
-                //y.prev = null;
             }
             temp = temp.next;
         }
 
         while (x != null) {
             temp.next = x;
+            x.prev = temp;
             x = x.next;
-            //x.next.prev = x;
-            //x.prev = null;
             temp = temp.next;
         }
 
         while (y != null) {
             temp.next = y;
+            y.prev = temp;
             y = y.next;
-            //y.next.prev = y;
-            //y.prev = null;
             temp = temp.next;
         }
-        return merged.next;
 
-//        if (x == null) {
-//            return y;
-//        }
-//
-//        if (y == null) {
-//            return x;
-//        }
-//
-//        if (comparator.compare(x.data, y.data) <= 0) {
-//            x.next = merge(x.next, y, comparator);
-//            x.next.prev = x;
-//            x.prev = null;
-//            return x;
-//        }
-//        else {
-//            y.next = merge(x, y.next, comparator);
-//            y.next.prev = y;
-//            y.prev = null;
-//            return y;
-//        }
+        return merged.next;
     }
 
     public void forEach(Action<T> action) {
